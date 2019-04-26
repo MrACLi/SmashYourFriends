@@ -2,54 +2,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Player))]
-
-public class PlayerController : MonoBehaviour
+namespace Player
 {
-    [SerializeField] private Transform m_Cam;
-    [SerializeField] private Vector3 m_CamForward;
-    [SerializeField] private Vector3 m_Move;
+    [RequireComponent(typeof(Player))]
 
-    private bool pressedJump;
-
-    private Player m_Player;
-
-    // Start is called before the first frame update
-    void Start()
+    public class PlayerController : MonoBehaviour
     {
-        m_Player = GetComponent<Player>();
-        // 获取MainCamera用来作为参考控制Player
-        if(Camera.main != null)
-        {
-            m_Cam = Camera.main.transform;
-        }else
-        {
-            Debug.Log("No main camera(Tagged as MainCamera) in use, controller will use world coordinate");
-        }
-    }
+        [SerializeField] private Transform m_Cam;
+        [SerializeField] private Vector3 m_CamForward;
+        [SerializeField] private Vector3 m_Move;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(!pressedJump)
-            pressedJump = Input.GetKeyDown(KeyCode.Space);
-        
-    }
+        private bool pressedJump;
 
-    private void FixedUpdate()
-    {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        if(m_Cam != null)
+        private Player m_Player;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            m_CamForward = Vector3.ProjectOnPlane(m_Cam.forward, new Vector3(0, 1, 0));
-            m_Move = m_CamForward * v + m_Cam.right * h;
+            m_Player = GetComponent<Player>();
+            // 获取MainCamera用来作为参考控制Player
+            if (Camera.main != null)
+            {
+                m_Cam = Camera.main.transform;
+            } else
+            {
+                Debug.Log("No main camera(Tagged as MainCamera) in use, controller will use world coordinate");
+            }
         }
-        else
+
+        // Update is called once per frame
+        void Update()
         {
-            m_Move = Vector3.forward * v + Vector3.right * h;
+            if (!pressedJump)
+                pressedJump = Input.GetKeyDown(KeyCode.Space);
+
         }
-        m_Player.Move(m_Move, pressedJump);
-        pressedJump = false;
+
+        private void FixedUpdate()
+        {
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
+            if (m_Cam != null)
+            {
+                m_CamForward = Vector3.ProjectOnPlane(m_Cam.forward, new Vector3(0, 1, 0));
+                m_Move = m_CamForward * v + m_Cam.right * h;
+            }
+            else
+            {
+                m_Move = Vector3.forward * v + Vector3.right * h;
+            }
+            m_Player.Move(m_Move, pressedJump);
+            pressedJump = false;
+        }
     }
 }
